@@ -1,0 +1,721 @@
+#include <iostream>
+#include <cstdlib>
+#include<string>
+using namespace std;
+#define size 50
+int num_choose, counterofproject = 0, counterofnews = 0;
+char answer = 0;
+void displaylogo();
+void MainMenu();
+void ProjectMenu();
+void NewsMenu();
+void AddProject();
+void Addnews();
+void DisplayProject();
+void Displayallnews();
+void FilterProjectMenu();
+void FilterStartProject();
+void FilterEndProject();
+void  FilterMenuNews();
+void FilterNewsByID();
+void FilterNewsBytitle();
+struct date
+{
+	int day;
+	int month;
+	int year;
+} StartDate, EndDate, publishingdate;
+struct DataProject
+{
+	int id;
+	string title;
+	string brief;
+	date StartDate;
+	date EndDate;
+} project[size];
+
+struct newsdata
+{
+	int id;
+	int idattachedtoproject;
+	string title;
+	string brief;
+	date publishingdate;
+
+} NEWS[size];
+int main()
+{
+	displaylogo();
+	MainMenu();
+	system("pause");
+	return 0;
+}
+void displaylogo()
+{
+	system("cls");
+	cout << "                        ***********************************        \n";
+	cout << "                        *                                 *\n                        *    WELCOME TO Company Profile   *\n                        *                                 *\n";
+	cout << "                        ***********************************       \n";
+}
+void MainMenu()
+{
+	system("cls");
+	displaylogo();
+	cout << " Main Menu :" << endl;
+	cout << " 1. Projects " << endl;
+	cout << " 2. News" << endl;
+	while (true) 
+	{
+		cin >> num_choose;
+		if (num_choose == 1 || num_choose == 2) 
+		{
+			switch (num_choose) {
+			case 1:
+				ProjectMenu();
+				break;
+			case 2:
+				NewsMenu();
+
+				break;
+			}
+		}
+		else {
+			cout << " Error .. Please Try Again " << endl;
+			continue;
+		}
+	}
+}
+void ProjectMenu()
+{
+	system("cls");
+	displaylogo();
+	cout << " 1. Create a Project " << endl;
+	cout << " 2. Display all projects " << endl;
+	cout << " 3. Search for a project " << endl;
+	cout << " 4. Back to Main Menu " << endl;
+	while (true)
+	{
+		cin >> num_choose;
+		if (num_choose == 1 || num_choose == 2 || num_choose == 3 || num_choose == 4)
+		{
+			switch (num_choose)
+			{
+			case 1:
+				AddProject();
+				break;
+			case 2:
+				DisplayProject();
+				break;
+			case 3:
+				FilterProjectMenu();
+				break;
+			case 4:
+				MainMenu();
+				break;
+			}
+		}
+		else {
+			cout << " Error .. Please Try Again" << endl;
+			continue;
+		}
+	}
+}
+void AddProject()
+{
+	counterofproject++;
+	system("cls");
+	displaylogo();
+	while (true)
+	{
+		project[counterofproject].id = counterofproject;
+		cout << " ID :" << project[counterofproject].id;
+		cout << endl;
+		cout << " Title : ";
+		cin >> project[counterofproject].title;
+		cout << endl;
+		cout << " Brief :";
+		cin >> project[counterofproject].brief;
+		cout << endl;
+		cout << " Start Date :";
+		while (true)
+		{
+			cin >> project[counterofproject].StartDate.day >> project[counterofproject].StartDate.month
+				>> project[counterofproject].StartDate.year;
+			if (project[counterofproject].StartDate.day > 31 || project[counterofproject].StartDate.day <= 0 || project[counterofproject].StartDate.month > 12 || project[counterofproject].StartDate.month <= 0 || project[counterofproject].StartDate.year <= 0)
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				continue;
+			}
+			else
+				break;
+		}
+		cout << " End Date :";
+		while (true) 
+		{
+			cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month
+				>> project[counterofproject].EndDate.year;
+			if (project[counterofproject].EndDate.day > 31 || project[counterofproject].EndDate.month > 12 || project[counterofproject].EndDate.day <= 0 || project[counterofproject].EndDate.month <= 0 || project[counterofproject].EndDate.year <= 0)
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				continue;
+			}
+			else
+				break;
+		}
+		while (true)
+		{
+			if (project[counterofproject].EndDate.year == project[counterofproject].StartDate.year && project[counterofproject].EndDate.month == project[counterofproject].StartDate.month
+				&& project[counterofproject].EndDate.day < project[counterofproject].StartDate.day)
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month >> project[counterofproject].EndDate.year;
+				continue;
+			}
+			else if (project[counterofproject].EndDate.year == project[counterofproject].StartDate.year
+				&& project[counterofproject].EndDate.month == project[counterofproject].StartDate.month
+				&& project[counterofproject].EndDate.day == project[counterofproject].StartDate.day)
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month >> project[counterofproject].EndDate.year;
+				continue;
+			}
+			else if (project[counterofproject].EndDate.year == project[counterofproject].StartDate.year
+				&& project[counterofproject].EndDate.month < project[counterofproject].StartDate.month
+				&& (project[counterofproject].EndDate.day < project[counterofproject].StartDate.day
+					|| project[counterofproject].EndDate.day > project[counterofproject].StartDate.day
+					|| project[counterofproject].EndDate.day == project[counterofproject].StartDate.day))
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month >> project[counterofproject].EndDate.year;
+				continue;
+			}
+			else if (project[counterofproject].EndDate.year < project[counterofproject].StartDate.year
+				&& project[counterofproject].EndDate.month == project[counterofproject].StartDate.month
+				&& (project[counterofproject].EndDate.day < project[counterofproject].StartDate.day
+					|| project[counterofproject].EndDate.day > project[counterofproject].StartDate.day || project[counterofproject].EndDate.day == project[counterofproject].StartDate.day))
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month >> project[counterofproject].EndDate.year;
+				continue;
+			}
+			else if (project[counterofproject].EndDate.year < project[counterofproject].StartDate.year
+				&& project[counterofproject].EndDate.month < project[counterofproject].StartDate.month
+				&& (project[counterofproject].EndDate.day < project[counterofproject].StartDate.day
+					|| project[counterofproject].EndDate.day > project[counterofproject].StartDate.day || project[counterofproject].EndDate.day == project[counterofproject].StartDate.day))
+			{
+
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month >> project[counterofproject].EndDate.year;
+				continue;
+			}
+			else if (project[counterofproject].EndDate.year < project[counterofproject].StartDate.year
+				&& project[counterofproject].EndDate.month > project[counterofproject].StartDate.month
+				&& (project[counterofproject].EndDate.day < project[counterofproject].StartDate.day
+					|| project[counterofproject].EndDate.day > project[counterofproject].StartDate.day || project[counterofproject].EndDate.day == project[counterofproject].StartDate.day))
+			{
+				cout << " Invalid Date .. Please Try Again ! " << endl;
+				cin >> project[counterofproject].EndDate.day >> project[counterofproject].EndDate.month >> project[counterofproject].EndDate.year;
+				continue;
+			}
+			else
+				break;
+		}
+		cout << " Press (Y) to back to Project Menu : \n";
+		cout << " Press (N) to back to the Main Menu : \n";
+		while (true)
+		{
+			cin >> answer;
+			if (answer == 'y' || answer == 'Y')
+				ProjectMenu();
+			else if (answer == 'N' || answer == 'n')
+				MainMenu();
+			else
+			{
+				cout << " Invalid Operation .. Please Try Again !" << endl;
+				continue;
+			}
+		}
+	}
+}
+void DisplayProject()
+{
+	system("cls");
+	displaylogo();
+	if (counterofproject <= 0)
+		cout << " There are no Projects \n";
+	else
+	{
+		for (int i = 1; i <= counterofproject; i++)
+		{
+			bool flag = false;
+			cout << " Project ID :"
+				<< " " << i;
+			cout << endl;
+			cout << " Project Title : "
+				<< " " << project[i].title << endl;
+			cout << " Project Brief :"
+				<< " " << project[i].brief << endl;
+			cout << " Start Date :"
+				<< " " << project[i].StartDate.day << "/" << project[i].StartDate.month << 
+				"/" << project[i].StartDate.year << endl;
+			cout << " End Date : "
+				<< " " << project[i].EndDate.day << "/" << project[i].EndDate.month << 
+				"/" << project[i].EndDate.year << endl;
+			cout << endl;
+			if (counterofnews == 0)
+				cout << " There is no News Yet  \n";
+			else
+			{
+				for (int j = 1 ; j <= counterofnews ; j++)
+				{
+
+					if (project[i].id == NEWS[j].idattachedtoproject)
+					{
+						flag = true;
+						cout << " News ID : " << NEWS[j].id << endl;
+						cout << " News Title :" << NEWS[j].title << endl;
+						cout << " News Brief :" << NEWS[j].brief << endl;
+						cout << " Publishing Date : " << NEWS[j].publishingdate.day << "/" << NEWS[j].publishingdate.month
+							<< "/" << NEWS[j].publishingdate.year << endl;
+						cout << endl;
+
+					}
+					
+				}
+				if (flag == false)
+					cout << " This Project has no News  \n";
+			}
+			cout << " _____________________________________ " << endl;
+		}
+	}
+	cout << " Press (Y) to back to Project Menu : \n";
+	cout << " Press (N) to back to the Main Menu : \n";
+	while (true) {
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+			ProjectMenu();
+		else if (answer == 'N' || answer == 'n')
+			MainMenu();
+		else
+		{
+			cout << " Invalid Operation .. Please Try Again !" << endl;
+			continue;
+		}
+	}
+}
+void FilterProjectMenu()
+{
+	system("cls");
+	displaylogo();
+	cout << " 1. Filter with Start Date " << endl;
+	cout << " 2. Filter with End Date " << endl;
+	cout << " 3. Back to Project Menu " << endl;
+	while (true) {
+		cin >> num_choose;
+		if (num_choose == 1 || num_choose == 2 || num_choose == 3)
+		{
+			switch (num_choose)
+			{
+			case 1:
+				FilterStartProject();
+				break;
+			case 2:
+				FilterEndProject();
+				break;
+			case 3:
+				ProjectMenu();
+				break;
+			}
+		}
+		else
+		{
+			cout << " Invalid Operation .. please Try Again ! \n";
+			continue;
+		}
+	}
+}
+void FilterStartProject()
+{
+	bool flag = false;
+	system("cls");
+	displaylogo();
+	cout << " Search using Start Date " << endl;
+	cin >> StartDate.day >> StartDate.month >> StartDate.year;
+	for (int i = 1; i <= counterofproject; i++)
+	{
+		if (StartDate.day == project[i].StartDate.day && StartDate.month == project[i].StartDate.month && StartDate.year == project[i].StartDate.year)
+		{
+			flag = true;
+			cout << " Project ID :"
+				<< " " << i;
+			cout << endl;
+			cout << " Project Title : "
+				<< " " << project[i].title << endl;
+			cout << " Project Brief :"
+				<< " " << project[i].brief << endl;
+			cout << " Start Date :"
+				<< " " << project[i].StartDate.day << "/" << project[i].StartDate.month << "/" << project[i].StartDate.year << endl;
+			cout << " End Date : "
+				<< " " << project[i].EndDate.day << "/" << project[i].EndDate.month << "/" << project[i].EndDate.year << endl;
+		}
+	}
+	if (flag == false)
+		cout << " Sorry .. There is no project matching \n";
+	cout << " _____________________________________ " << endl;
+	cout << " Press (Y) to back to Project Menu : \n";
+	cout << " Press (N) to back to the Main Menu : \n";
+	while (true) {
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+			ProjectMenu();
+		else if (answer == 'N' || answer == 'n')
+			MainMenu();
+		else
+		{
+			cout << " Invalid Operation .. Please Try Again !" << endl;
+			continue;
+		}
+	}
+}
+void FilterEndProject()
+{
+	bool flag = false;
+	system("cls");
+	displaylogo();
+	cout << " Search using End Date " << endl;
+	cin >> EndDate.day >> EndDate.month >> EndDate.year;
+	for (int i = 1; i <= counterofproject; i++)
+	{
+		if (EndDate.day == project[i].EndDate.day && EndDate.month == project[i].EndDate.month && EndDate.year == project[i].EndDate.year) {
+			flag = true;
+			cout << "  ID :"
+				<< " " << i;
+			cout << endl;
+			cout << " Title : "
+				<< " " << project[i].title << endl;
+			cout << " Brief :"
+				<< " " << project[i].brief << endl;
+			cout << " Start Date :"
+				<< " " << project[i].StartDate.day << "/" << project[i].StartDate.month << "/" << project[i].StartDate.year << endl;
+			cout << " End Date : "
+				<< " " << project[i].EndDate.day << "/" << project[i].EndDate.month << "/" << project[i].EndDate.year << endl;
+		}
+	}
+
+	if (flag == false)
+		cout << " Sorry .. There is no project matching ! \n";
+	cout << "________________________\n";
+	cout <<  " Press (Y) to back to Project Menu : \n";
+	cout << " Press (N) to back to the Main Menu : \n";
+	while (true) {
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+			ProjectMenu();
+		else if (answer == 'N' || answer == 'n')
+			MainMenu();
+		else {
+			cout << " Invalid Operation .. Please Try Again !" << endl;
+			continue;
+		}
+	}
+}
+void NewsMenu()
+{
+	system("cls");
+	displaylogo();
+	cout << "1.Creat News\n2.Display ALL News\n3.Filter\n4.BACK\n";
+	do {
+		cin >> num_choose;
+		switch (num_choose)
+		{
+		case 1:
+			Addnews();
+			break;
+		case 2:
+			Displayallnews();
+			break;
+		case 3:
+			FilterMenuNews();
+			break;
+		case 4:
+			MainMenu();
+			break;
+		default:
+			cout << " Invalid Date .. Please Try Again !";
+		}
+	} while (num_choose != 1 || num_choose != 2 || num_choose != 3 || num_choose != 4);
+}
+
+void Addnews()
+{
+	system("cls");
+	displaylogo();
+
+	if (counterofproject == 0)
+	{
+		cout << " Creat Project at First\n";
+	}
+	else
+	{ // another brace (start) --> message of enter publishing date
+		{
+			counterofnews++;
+			NEWS[counterofnews].id = counterofnews;
+			cout << " ID : " << NEWS[counterofnews].id << endl;
+			cout << " Title :";
+			cin >> NEWS[counterofnews].title;
+			cout << "Brief :";
+			cin >> NEWS[counterofnews].brief;
+			cout << "__________________________________\n";
+			cout << " Choose project :\n";
+			for (int i = 1; i <= counterofproject; i++)
+			{
+				cout << " Project ID : " << project[i].id << endl;
+			}
+			while (true)
+			{
+				cin >> num_choose;
+				if (num_choose > counterofproject || num_choose <= 0)
+				{
+					cout << " Try Again \n";
+					continue;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			NEWS[counterofnews].idattachedtoproject = project[num_choose].id;
+
+		}
+		for (int i = 1; i <= counterofproject; i++)
+		{
+			if (num_choose == i)
+			{
+				cout << " Start Date :" << project[num_choose].StartDate.day << "/" << project[num_choose].StartDate.month << "/" << project[num_choose].StartDate.year << endl;
+				cout << " End Date :" << project[num_choose].EndDate.day << "/" << project[num_choose].EndDate.month << "/" << project[num_choose].EndDate.year << endl;
+			}
+		}
+		cout << " Enter publishing Date  :";
+		while (true)
+		{
+			cin >> NEWS[counterofnews].publishingdate.day >> NEWS[counterofnews].publishingdate.month
+				>> NEWS[counterofnews].publishingdate.year;
+			if (NEWS[counterofnews].publishingdate.day > 31 || NEWS[counterofnews].publishingdate.day <= 0 || NEWS[counterofnews].publishingdate.month > 12
+				|| NEWS[counterofnews].publishingdate.month <= 0 || NEWS[counterofnews].publishingdate.year <= 0)
+			{
+				cout << " Invalid .. Please Try Again " << endl;
+				continue;
+			}
+			else
+				break;
+		}
+	} // another bracket (end)
+	cout << "___________________________________\n";
+	cout << "Press(Y) to go to News Menu\nPress(N) to go to Main Menu\n";
+	do
+	{
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+		{
+			NewsMenu();
+			break;
+		}
+		else if (answer == 'n' || answer == 'N')
+		{
+			MainMenu();
+			break;
+		}
+		else
+		{
+			continue;
+		}
+	} while (true);
+}
+void Displayallnews()
+{
+	system("cls");
+	displaylogo();
+	if (counterofnews == 0)
+	{
+		cout << " There are no news\n";
+	}
+	else
+	{
+		for (int i = 1; i <= counterofnews; i++)
+		{
+			cout << " News ID :" << NEWS[i].id << endl;
+			cout << " News Title :" << NEWS[i].title << endl;
+			cout << " News Brief :" << NEWS[i].brief << endl;
+			cout << " Publishing Date :" << NEWS[i].publishingdate.day << "/" << NEWS[i].publishingdate.month << "/" << NEWS[i].publishingdate.year << endl;
+			cout << endl;
+			cout << " Project ID :" << NEWS[i].idattachedtoproject << endl;
+			for (int j = 1; j <= counterofproject; j++)
+			{
+				if (NEWS[i].idattachedtoproject == project[j].id)
+					cout << " Project Title :" << project[j].title << endl;
+			}
+			cout << "______________________________________\n";
+		}
+	}
+
+	cout << " Press(Y) to go to News Menu\nPress(N) to go to Main Menu\n";
+	do
+	{
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+		{
+			NewsMenu();
+			break;
+		}
+		else if (answer == 'n' || answer == 'N')
+		{
+			MainMenu();
+			break;
+		}
+		else
+		{
+			continue;
+		}
+	} while (true);
+}
+
+void FilterMenuNews()
+{
+	system("cls");
+	displaylogo();
+	cout << "1.Filter by Project ID \n2.Filter by Keyword\n3.Back \n";
+	do
+	{
+		cin >> num_choose;
+		switch (num_choose)
+		{
+		case 1:
+			FilterNewsByID();
+			break;
+		case 2:
+			FilterNewsBytitle();
+			break;
+		case 3:
+			NewsMenu();;
+			break;
+		default:
+			cout << " Invalid....Try Again\n";
+		}
+	} while (num_choose != 1 || num_choose != 2 || num_choose != 3);
+
+}
+
+void FilterNewsByID()
+{
+	bool flag = false;
+	int ProIdUser;
+	system("cls");
+	displaylogo();
+	for (int i = 1; i <= counterofproject; i++)
+	{
+		cout << " Project ID :" << project[i].id << endl;
+		cout << " Project Title :" << project[i].title << endl;
+		cout << " ____________________________________________ \n";
+	}
+	cout << " Enter a Project ID to search \n";
+	while (true)
+	{
+		cin >> ProIdUser;
+		if (ProIdUser <= 0 || ProIdUser > counterofproject)
+		{
+			cout << " Invalid .. Try Again \n";
+			continue;
+		}
+		else
+		{
+			for (int i = 1; i <= counterofnews; i++)
+			{
+
+				if (ProIdUser == NEWS[i].idattachedtoproject)
+				{
+					flag = true;
+					cout << " News ID : " << NEWS[i].id << endl;
+					cout << " News Title :" << NEWS[i].title << endl;
+					cout << " News Brief :" << NEWS[i].brief << endl;
+					cout << " Publishing Date : " << NEWS[i].publishingdate.day << "/" << NEWS[i].publishingdate.month
+						<< "/" << NEWS[i].publishingdate.year << endl;
+					cout << endl;
+
+				}
+			}
+			if (flag == false)
+				cout << " There is no news yet ! \n";
+		}
+		break;
+	}
+	cout << " ______________________________________ \n";
+	cout << " Press (Y) to back to Filtration Menu \n";
+	cout << " Press (N) to back to News Menu \n";
+	while (true)
+	{
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+			FilterMenuNews();
+		else if (answer == 'N' || answer == 'n')
+			NewsMenu();
+		else
+		{
+			cout << " Invalid Operation .. Please Try Again !" << endl;
+			continue;
+		}
+	}
+
+}
+void FilterNewsBytitle()
+{
+	bool foundnews = false; bool foundproject = false;
+	string usertitle;
+	system("cls");
+	displaylogo;
+	cout << " Enter a Project Title to search \n";
+	cin >> usertitle;
+
+	for (int i = 1; i <= counterofproject; i++)
+	{
+		if (project[i].title.find(usertitle) != string ::npos) 
+		{
+			foundproject = true;
+			for (int j = 1; j <= counterofnews; j++)
+			{
+				if (project[i].id == NEWS[j].idattachedtoproject)
+				{
+					foundnews = true;
+					cout << " News ID :" << NEWS[j].id << endl;
+					cout << " News Brief :" << NEWS[j].brief << endl;
+					cout << " News Title :" << NEWS[j].title << endl;
+					cout << " Publishing Date : " << NEWS[j].publishingdate.day << "/" << NEWS[j].publishingdate.month
+						<< "/" << NEWS[j].publishingdate.year << endl;
+					cout << endl;
+				}
+			}
+			if (foundnews == false)
+			{
+				cout << " There is no news yet \n";
+				break;
+			}
+		}
+	}
+	if (foundproject == false)
+	     cout << " There is no project matches this title; \n";
+	cout << " Press (Y) to back to Filter Menu \n";
+	cout << " Press (N) to back to News Menu \n";
+	while (true)
+	{
+		cin >> answer;
+		if (answer == 'y' || answer == 'Y')
+			FilterMenuNews();
+		else if (answer == 'N' || answer == 'n')
+			NewsMenu();
+		else
+		{
+			cout << " Invalid Operation .. Please Try Again !" << endl;
+			continue;
+		}
+	}
+}
